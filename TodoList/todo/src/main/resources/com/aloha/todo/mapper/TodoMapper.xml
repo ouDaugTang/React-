@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace="매퍼 인터페이스 경로" --> 
+<mapper namespace="com.aloha.todo.mapper.TodoMapper">
+    <select id="list" resultType="Todo">
+        SELECT *
+        FROM todo
+        ORDER BY status
+                ,no DESC
+    </select>
+    <select id="select" resultType="Todo">
+        SELECT *
+        FROM todo
+        WHERE no = #{no}
+    </select>
+
+    <!-- 등록 -->
+    <!-- 
+        🎈 useGeneratedKeys
+        : AUTO_INCREMENT 된 값을 KeyProperty 에 지정한 변수에 자동으로 담아준다.
+     -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
+    <!-- <insert id="insert">
+        <selectKey keyProperty="no" resultType="int" order="AFTER">
+            SELECT LIST_INSERT_ID() FROM dual
+        </selectKey> -->
+
+        INSERT INTO todo (name, status)
+        VALUES(#{name}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE todo
+        SET name = #{name}
+           ,status = #{status}
+           ,upd_date = now()
+        WHERE no = #{no}      
+    </update>
+
+    <delete id="delete">
+        DELETE FROM todo
+        WHERE no = #{no} 
+    </delete>
+
+    <delete id="deleteAll">
+        DELETE FROM todo 
+    </delete>
+    
+    <update id="clearAll">
+        UPDATE todo
+        SET status = CASE 
+        WHEN status = 0 THEN 1
+        ELSE status
+        END;
+    </update>
+
+</mapper>
